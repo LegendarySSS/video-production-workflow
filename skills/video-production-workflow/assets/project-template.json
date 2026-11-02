@@ -1,0 +1,47 @@
+{
+  "schema_version": "0.1.0",
+  "project_id": null,
+  "title": null,
+  "brief": {
+    "production_type": null,
+    "concept": null,
+    "audience": null,
+    "duration_seconds": null,
+    "aspect_ratio": null,
+    "language": null,
+    "visual_references": [],
+    "acceptance_targets": [],
+    "assumptions": [],
+    "budget": {
+      "currency": null,
+      "total_limit": null,
+      "per_shot_limit": null,
+      "max_attempts_per_shot": null,
+      "spending_authorization": null
+    },
+    "tools": [],
+    "unresolved_questions": []
+  },
+  "state": {
+    "current_stage": "brief",
+    "status": "draft",
+    "next_action": "填写创作简报并盘点实际可用工具",
+    "blockers": [],
+    "updated_at": null
+  },
+  "decisions": [],
+  "documents": [],
+  "assets": [],
+  "characters": [],
+  "scenes": [],
+  "shots": [],
+  "generations": [],
+  "music": {
+    "asset_id": null,
+    "version": null,
+    "duration_seconds": null,
+    "sections": []
+  },
+  "deliverables": [],
+  "handoff_notes": []
+}
