@@ -1,0 +1,8 @@
+{
+  "provider": "runway",
+  "model": "gen4.5",
+  "prompt": "A fictional character stands by a window, turns toward the camera, and slowly raises their right hand. Natural facial expression and body movement. One continuous shot, no subtitles.",
+  "duration": 5,
+  "aspect_ratio": "16:9",
+  "resolution": "720p"
+}

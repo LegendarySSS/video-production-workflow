@@ -1,0 +1,9 @@
+{
+  "provider": "seedance",
+  "model": "doubao-seedance-2-0-260128",
+  "prompt": "一个虚构人物站在窗边，转头看向镜头，抬起右手示意停下，说：“先等等。”动作与表情自然，单一连续镜头，无字幕。",
+  "duration": 5,
+  "aspect_ratio": "16:9",
+  "resolution": "720p",
+  "audio": true
+}

@@ -1,0 +1,8 @@
+{
+  "provider": "kling",
+  "model": "kling-4.0",
+  "prompt": "一个虚构人物站在窗边，先看向窗外，然后转头看向镜头，抬起右手示意停下。单一连续镜头，自然表情与动作，无字幕，无背景音乐。",
+  "duration": 5,
+  "aspect_ratio": "16:9",
+  "resolution": "720p"
+}

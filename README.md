@@ -1,95 +1,112 @@
 # 视频制作工作流
 
-面向短剧、短片和 MV 的 Agent Skill：把创作、角色资产、分镜、生成记录与验收保存为可交接、可恢复的项目。
+面向短剧、短片和 MV 的 Agent Skill：剧本、角色一致性、分镜预演、动态镜头制作、验收及项目恢复。
 
-它提供制作方法与项目模板，视频生成、配音和剪辑按使用者实际接入的工具执行；不附带模型、付费额度或素材，不承诺人物绝对一致或一键成片。
+**V0.2.0 已内置可灵 Kling 4.0、Seedance 2.0/2.5、Runway Gen-4.5 的官方视频 API 调用脚本。** 使用者配置自己选用供应商的 API Key 即可提交、查询、等待和下载镜头；不需要同时购买三家服务。API 账户仍需具备模型权限与额度。
 
-## 动态短剧与静态预演的区别
+几张静帧加配音只能算预演，不能替代要求人物动作与表演的短剧。脚本生成成功后仍须播放验收。
 
-要求短剧时，默认目标是有角色表演和动作的动态影片。几张静态图片加台词、图片推拉或字幕动画只能作为预演，不能自动当成动态短剧交付。首次先测试一个代表性动态镜头，再批量制作。
+## 运行条件
 
-只把链接发给 ChatGPT，不代表该会话已获得视频生成能力。让 Agent 先核实实际工具；只有出图、配音或合成能力时，先交付前期包并列明外部制作步骤。见 [动态制作规则](skills/video-production-workflow/references/dynamic-drama.md)。
+- 能执行本地命令、读取文件并访问外网的 Agent，或由本人终端运行。
+- Python 3.10+；脚本仅用标准库，无需 pip 安装依赖。
+- 所选供应商的 API Key、相应模型权限与 API 额度。
 
-可直接使用：
+**只有网页浏览或文字能力的 ChatGPT 会话不能仅凭 GitHub 链接自动执行脚本。** 此时让 Agent 提供命令，由本人在终端执行，或在具备命令执行能力的环境使用。技能不内置密钥、付费额度、图像生成器或完整剪辑软件。
 
-> 按本技能制作有人物表演和动作的动态短剧，不接受静帧配音替代。先核实视频制作能力并完成一个代表性动态镜头；缺少工具时明确说明并交付外部执行包，不能把预演标成成片。
+## 安装 Skill
 
-## 快速安装
+在支持 skill-installer 的 Codex 中发送：
 
-### 方式一：让 Codex 安装
+> 请安装 https://github.com/LegendarySSS/video-production-workflow/tree/main/skills/video-production-workflow 的完整技能，包括 scripts、references 和 assets；保留已有同名技能，更新前先检查差异。
 
-将下面这段话发送给支持 skill-installer 的 Codex：
-
-> 请使用 skill-installer 安装 https://github.com/LegendarySSS/video-production-workflow/tree/main/skills/video-production-workflow 的技能，保留已有同名技能；遇到冲突先告诉我。
-
-### 方式二：一条命令安装
-
-安装了 Node.js 22.20 或更新版本、npm 和 Git 的用户可执行：
+也可以用 Vercel Labs 的 skills 安装器（需 Node.js 22.20+、npm 与 Git）：
 
 ```bash
 npx skills add LegendarySSS/video-production-workflow --skill video-production-workflow -a codex -g
 ```
 
-按提示检查安装目标并确认。去掉 `-g` 可安装到当前项目。`skills` 是 Vercel Labs 维护的第三方安装工具，命令参数见其 [官方说明](https://github.com/vercel-labs/skills/blob/main/docs/commands.md)。
+不加 `-g` 为项目级安装。安装后在下一轮调用 `$video-production-workflow`。可手动下载 ZIP，将 skills/video-production-workflow 整个文件夹放入本机 Agent 使用的技能目录，保留所有附件。
 
-### 方式三：手动安装
+已安装旧版时使用安装器更新或比对后替换技能目录，再新开会话；不要覆盖自己的密钥与作品目录。安装器选项见 [官方说明](https://github.com/vercel-labs/skills/blob/main/docs/commands.md)。
 
-下载本仓库的 ZIP，将 `skills/video-production-workflow` 整个文件夹放入 Codex 使用的 skills 目录。不要只复制 SKILL.md，参考文档和模板也必须保留。避免覆盖已有同名技能；自定义安装目录按本机配置处理。
+## 最快运行：克隆后使用
 
-在下一轮对话调用 `$video-production-workflow`；若未发现，检查目录层级并新开聊天或重启应用。
+```bash
+git clone https://github.com/LegendarySSS/video-production-workflow.git
+cd video-production-workflow
+python3 --version
+```
 
-## 第一次使用
+以下先以可灵为例；Seedance 和 Runway 只需替换 provider 与示例文件。
+
+### 1. 配置本人的 API Key
+
+```bash
+python3 skills/video-production-workflow/scripts/video.py configure --provider kling
+python3 skills/video-production-workflow/scripts/video.py doctor --provider kling
+```
+
+configure 在本机提示输入，密钥不回显，保存到当前目录 .env；不会覆盖已有文件。doctor 只检查是否配置，不验证权限和余额。不要把真实密钥发给 Agent、提交 Git 或放入镜头 JSON。
+
+| provider | 环境变量 | 获取密钥 | 示例 |
+|---|---|---|---|
+| kling | KLING_API_KEY | [可灵控制台](https://kling.ai/dev/api-key) | [kling-shot.json](skills/video-production-workflow/assets/kling-shot.json) |
+| seedance | ARK_API_KEY | [火山方舟](https://ark.volcengine.com/region:cn-beijing/apikey) | [seedance-shot.json](skills/video-production-workflow/assets/seedance-shot.json) |
+| runway | RUNWAYML_API_SECRET | [Runway Dev](https://dev.runwayml.com/) | [runway-shot.json](skills/video-production-workflow/assets/runway-shot.json) |
+
+也可在本机环境中配置同名变量，优先于 .env；多家配置参考 [环境文件模板](skills/video-production-workflow/assets/api-keys.env.example)。已安装技能的 Agent 应定位脚本的真实绝对路径，密钥和任务记录放在独立项目内，详见 [完整配置说明](skills/video-production-workflow/references/api-setup.md)。
+
+### 2. 离线检查输入
+
+```bash
+python3 skills/video-production-workflow/scripts/video.py preview --spec skills/video-production-workflow/assets/kling-shot.json
+```
+
+这个步骤不联网、不扣费。修改镜头 JSON 可以调整 prompt、duration、aspect_ratio、resolution 和参考素材。三家参数能力不完全一致，脚本会拒绝不支持的输入。
+
+### 3. 创建一次实际生成任务
+
+确认供应商价格及本人授权后执行；此命令会消耗本人的 API 额度：
+
+```bash
+python3 skills/video-production-workflow/scripts/video.py submit --spec skills/video-production-workflow/assets/kling-shot.json --job-dir renders/S001-v001 --confirm-spend
+python3 skills/video-production-workflow/scripts/video.py wait --job-dir renders/S001-v001 --timeout 600
+python3 skills/video-production-workflow/scripts/video.py download --job-dir renders/S001-v001 --output renders/S001-v001.mp4
+```
+
+--confirm-spend 表示一次创建授权，不是金额封顶。任务目录已存在时拒绝重复创建；等待超时后继续查询同一任务，不再 submit。素材 URL 需是供应商可读取的 HTTPS 地址，脚本不自动上传本地图片或公开私人素材。
+
+### 4. 继续制作与恢复
 
 ```text
-使用 $video-production-workflow 帮我建立一个视频项目。
-我还没确定短片还是 MV，也没有生成工具。
-先帮我确定一个小规模试作方向，保存简报和项目进度，不调用付费服务。
+按 video-production-workflow 创建短剧项目，使用我已在本机配置的可灵 API。
+先定位脚本和环境文件，不读取或显示密钥正文。
+完成角色与分镜方案后，先给我看一个动态试镜的请求预览。
+根据我明确授权的次数与预算生成，播放验收后再继续，不接受静帧配音替代。
 ```
 
-已有创意时：
+只有看到真实视频动作、表演和必要的口型检查结果才能批准镜头。API succeeded 不是质量验收通过。完整影片还需角色资产、镜头制作、声音与剪辑。
 
-```text
-使用 $video-production-workflow 制作一个 45 秒悬疑短片项目。
-竖屏，一个主角、两个场景，无对白，项目放在当前工作区。
-先完成创作简报、角色设定和试镜方案，角色确认后再进入完整分镜。
-```
+## 模型范围与注意事项
 
-## 制作过程
+- **可灵**：新版 Kling 4.0 API，新加坡接口、API Key Bearer 认证；支持文生与 Omni 多参考/关键帧生成。旧版 Access Key/Secret Key 对不适用本入口。
+- **Seedance**：北京方舟 API，支持 2.0、Fast、Mini 和 2.5 的指定 Model ID。含写实人脸参考需按方舟可信素材/肖像规则准备，不能默认任意跨平台角色图都能用。
+- **Runway**：Gen-4.5 文生与单首帧图生，当前适配范围为 720p、2–10 秒；此入口不提供原生音频与口型保证。不能只贴配音就将对白镜头判为完成。
 
-```mermaid
-flowchart LR
-    A[创作简报] --> B[剧本或音乐结构]
-    B --> C[角色与场景资产]
-    C --> D[关键帧与预演]
-    D --> E[逐镜头制作与验收]
-    E --> F[剪辑与交付]
-    F --> G[项目归档与复盘]
-```
+详见 [完整安装、配置、素材输入、恢复与排错说明](skills/video-production-workflow/references/api-setup.md)。
 
-- 角色控制：建立身份标准图，区分固定特征与场次状态，先试镜再批量制作。
-- 连续性：检查单镜头运动，以及相邻镜头的持物、视线、动作与空间关系。
-- 可恢复：把阶段、决定、选中素材和下一步保存在 project.json。
-- 可追溯：每次候选保留输入、版本和检查结果，达到次数或费用上限后停止调用。
-- 无生成工具也可用：先输出文案、分镜和外部执行清单，回传素材后继续。
-
-## 后续操作
-
-```text
-继续指定目录下的项目，先读取 project.json，完成下一项任务。
-只改 S006 的动作，保留其他要求，检查与前后镜头的衔接。
-为我指定的视频生成工具整理输入包，未执行项目记录为 awaiting_external。
-整理项目交接：当前进度、选中素材、缺失文件、访问依赖和下一步。
-```
-
-## 文件结构
+## 文件与测试
 
 - [技能入口](skills/video-production-workflow/SKILL.md)
+- [API 命令入口](skills/video-production-workflow/scripts/video.py)
 - [项目模板](skills/video-production-workflow/assets/project-template.json)
-- [短剧、短片、MV 分支](skills/video-production-workflow/references/production-modes.md)
+- [动态短剧要求](skills/video-production-workflow/references/dynamic-drama.md)
 - [角色与镜头验收](skills/video-production-workflow/references/continuity-and-review.md)
-- [项目数据约定](skills/video-production-workflow/references/project-data.md)
-- [详细使用说明](docs/usage.md)
+- [使用与交接](docs/usage.md)
 
-技能目录保存规则；各作品另建项目目录，不将客户素材、私人偏好、密钥或成片写入通用技能。
+```bash
+python3 -m unittest discover -s tests -v
+```
 
-当前版本：0.1.1。已完成文件结构与引用检查；实际视频质量、跨工具表现和端到端制作需要使用者以真实样片验证。
+测试使用模拟 API 和网络响应，覆盖三家协议、任务恢复、防止重复创建、错误处理、下载及密钥保护；**没有使用真实 API Key 进行三家付费生成实测**。请先用自己的账号完成一个短镜头，再扩大生产规模。

@@ -10,7 +10,7 @@ project-template.json 是起点，不是已完成项目，也不是自动执行�
 - scenes：scene_id、layout_asset_id、lighting、character_states、prop_states。角色状态包含服装等可变项，注明左右坐标约定。
 - delivery_contract：target_kind、execution_mode、required_performance、sample_test。target_kind 区分 dynamic_video、previsualization、static_storyboard、motion_comic；execution_mode 为 connected_video、external_video、live_action、animation 或 preproduction_only。sample_test 记录状态、工具、素材路径、检查证据和未检查项。
 - shots：shot_id、scene_id、character_ids、purpose、duration_seconds、framing、action、camera、audio、reference_asset_ids、state_in、state_out、performance_beats、dialogue_timing、motion_source、status、selected_generation_id。
-- generations：generation_id、shot_id、version、tool_id、model、parameters、prompt、input_asset_ids、output_path、created_at、cost、review。按实际支持情况记录参数。
+- generations：generation_id、shot_id、version、tool_id、model、parameters、prompt、input_asset_ids、output_path、task_record_path、task_id、created_at、cost、review。按实际支持情况记录参数。
 - review：各维度的结果和证据、checked_by、checked_at、accepted_exceptions。维度见一致性参考文档。
 - decisions：decision_id、scope、subject_id、decision、source、created_at、affected_ids。scope 默认 project；source 区分用户确认与助手提案。
 - documents：document_id、kind、path、version、status。保存剧本、时间轴或剪辑表的位置。
@@ -34,3 +34,5 @@ motion_source 按实际来源填写 generated_video、live_action、animation �
 - 写入临时文件、解析成功、保留上版后替换。多人同时编辑先重新读取并核对版本，冲突时保留双方变更再处理。
 
 - 动态短剧交付需核对 delivery_contract 和完整播放证据；previsualization、静态素材合成和未完成的表演检查不能标为动态成片已验收。缺少动态来源时 state.status 为 awaiting_external，next_action 列出具体外部执行步骤。
+
+内置 API 的 task.json 记录执行状态，project.json 记录制作决定，两者通过 task_record_path 关联。网络提交状态不明时保留 submission_unknown，不把新目录当作自动重试；生成成功的素材仍需 review。
