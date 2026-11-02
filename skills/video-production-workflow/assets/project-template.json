@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.1.0",
+  "schema_version": "0.1.1",
   "project_id": null,
   "title": null,
   "brief": {
@@ -43,5 +43,17 @@
     "sections": []
   },
   "deliverables": [],
-  "handoff_notes": []
+  "handoff_notes": [],
+  "delivery_contract": {
+    "target_kind": null,
+    "execution_mode": null,
+    "required_performance": [],
+    "sample_test": {
+      "status": "not_started",
+      "tool_id": null,
+      "output_path": null,
+      "evidence": [],
+      "unverified_checks": []
+    }
+  }
 }
