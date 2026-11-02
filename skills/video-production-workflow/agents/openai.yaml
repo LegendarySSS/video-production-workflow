@@ -1,0 +1,4 @@
+interface:
+  display_name: "视频制作工作流"
+  short_description: "组织短剧、短片与 MV 制作，管理角色一致性、分镜、逐镜头验收及项目恢复"
+  default_prompt: "使用 $video-production-workflow 建立或继续一个视频项目，先读取项目进度并完成当前阶段所需的产物。"
