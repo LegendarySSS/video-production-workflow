@@ -36,3 +36,9 @@ motion_source 按实际来源填写 generated_video、live_action、animation �
 - 动态短剧交付需核对 delivery_contract 和完整播放证据；previsualization、静态素材合成和未完成的表演检查不能标为动态成片已验收。缺少动态来源时 state.status 为 awaiting_external，next_action 列出具体外部执行步骤。
 
 内置 API 的 task.json 记录执行状态，project.json 记录制作决定，两者通过 task_record_path 关联。网络提交状态不明时保留 submission_unknown，不把新目录当作自动重试；生成成功的素材仍需 review。
+
+## V0.3.0 阶段交接与参考
+
+新增 handoffs 与 reference_cases，定义见 [阶段交接](workflow-contracts.md) 及 [参考分析](../../video-storyboard/references/reference-analysis.md)。被 input_versions 引用的 documents/assets/characters/scenes/shots 条目需显式 version。剧本改变不覆盖旧批准依据，保存新版本并检查依赖。
+
+reference_cases 保存 case_id、narrative_problem、tags、source、analysis_path、related_shot_ids；具体观察、分析与改编保存在 analysis_path 指向的案例文件。来源不可核实时明确标 unverified，实际未阅读的内容不生成分析。

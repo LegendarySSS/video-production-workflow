@@ -1,0 +1,25 @@
+{
+  "case_id": null,
+  "narrative_problem": null,
+  "tags": [],
+  "source": {
+    "title": null,
+    "creator": null,
+    "kind": null,
+    "location": null,
+    "locator": null,
+    "verification": "unverified",
+    "usage_authorization": "unknown"
+  },
+  "observation": [],
+  "interpretation": [],
+  "mechanism": null,
+  "adaptation": null,
+  "applicability": [],
+  "limitations": [],
+  "related_shot_ids": [],
+  "validation": {
+    "status": "pending",
+    "evidence": []
+  }
+}

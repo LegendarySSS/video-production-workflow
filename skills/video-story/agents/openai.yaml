@@ -1,0 +1,4 @@
+interface:
+  display_name: "剧本与节奏"
+  short_description: "为短剧、短片与 MV 完成剧本与节奏，保存专项产物、检查依据与阶段交接"
+  default_prompt: "使用 $video-story 完成视频项目中当前相关任务，读取所需输入并保存产物和交接记录。"

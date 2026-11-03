@@ -2,7 +2,7 @@
 
 面向短剧、短片和 MV 的 Agent Skill：剧本、角色一致性、分镜预演、动态镜头制作、验收及项目恢复。
 
-**V0.2.0 已内置可灵 Kling 4.0、Seedance 2.0/2.5、Runway Gen-4.5 的官方视频 API 调用脚本。** 使用者配置自己选用供应商的 API Key 即可提交、查询、等待和下载镜头；不需要同时购买三家服务。API 账户仍需具备模型权限与额度。
+**V0.3.0 采用一个总入口 + 五个专项 Skill，按阶段读取并保存交接与参考分析。已内置可灵 Kling 4.0、Seedance 2.0/2.5、Runway Gen-4.5 的官方视频 API 调用脚本。** 使用者配置自己选用供应商的 API Key 即可提交、查询、等待和下载镜头；不需要同时购买三家服务。API 账户仍需具备模型权限与额度。
 
 几张静帧加配音只能算预演，不能替代要求人物动作与表演的短剧。脚本生成成功后仍须播放验收。
 
@@ -18,17 +18,32 @@
 
 在支持 skill-installer 的 Codex 中发送：
 
-> 请安装 https://github.com/LegendarySSS/video-production-workflow/tree/main/skills/video-production-workflow 的完整技能，包括 scripts、references 和 assets；保留已有同名技能，更新前先检查差异。
+> 请安装 https://github.com/LegendarySSS/video-production-workflow 中 skills 目录下全部六个技能，保留各自 scripts、references、assets 与同级目录关系。已有同名技能先比对后更新，不覆盖我的项目或密钥。
 
 也可以用 Vercel Labs 的 skills 安装器（需 Node.js 22.20+、npm 与 Git）：
 
 ```bash
-npx skills add LegendarySSS/video-production-workflow --skill video-production-workflow -a codex -g
+npx skills add LegendarySSS/video-production-workflow --skill '*' -a codex -g
 ```
 
-不加 `-g` 为项目级安装。安装后在下一轮调用 `$video-production-workflow`。可手动下载 ZIP，将 skills/video-production-workflow 整个文件夹放入本机 Agent 使用的技能目录，保留所有附件。
+不加 `-g` 为项目级安装。安装后在下一轮调用 `$video-production-workflow`。可手动下载 ZIP，将 skills 下全部六个文件夹放入本机 Agent 使用的同一个技能目录，保留所有附件；仅装总入口会缺少专项模块。
 
 已安装旧版时使用安装器更新或比对后替换技能目录，再新开会话；不要覆盖自己的密钥与作品目录。安装器选项见 [官方说明](https://github.com/vercel-labs/skills/blob/main/docs/commands.md)。
+
+## 专项分工
+
+| 技能 | 职责 |
+|---|---|
+| video-production-workflow | 总入口、路由、项目状态和阶段交接 |
+| video-story | 剧本、对白与音乐结构 |
+| video-design | 角色、视觉设定与场次状态 |
+| video-storyboard | 分镜、表演调度与参考案例分析 |
+| video-shot-production | 动态试镜、现有 API 与候选制作 |
+| video-post | 剪辑、声音、字幕与交付验收 |
+
+日常只调用总入口。单项修改可直接调用专项；模块由同一 Agent 按需读取，不需要多个 Agent。参考案例按叙事问题组织，保存来源与页码/时间码、观察、分析及本片改编，不附送名导原稿或漫画库。
+
+这仍是面向具备工具环境的使用者的技能套件，不是普通用户的一键制作网站；不会因拆分技能自动获得账号、视频播放、配音与剪辑能力。
 
 ## 最快运行：克隆后使用
 
@@ -104,6 +119,9 @@ python3 skills/video-production-workflow/scripts/video.py download --job-dir ren
 - [动态短剧要求](skills/video-production-workflow/references/dynamic-drama.md)
 - [角色与镜头验收](skills/video-production-workflow/references/continuity-and-review.md)
 - [使用与交接](docs/usage.md)
+- [阶段交接与上下文工具](skills/video-production-workflow/references/workflow-contracts.md)
+- [参考分析方法](skills/video-storyboard/references/reference-analysis.md)
+- [行为验收案例](docs/acceptance-cases.md)
 
 ```bash
 python3 -m unittest discover -s tests -v
